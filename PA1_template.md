@@ -10,12 +10,14 @@ output:
 
 
 First, we will need to import the activity.csv dataset.
-```{r, echo=TRUE}
+
+```r
 d <- read.csv("activity.csv", stringsAsFactors=FALSE)
 ```
 
 Next, we will need to load the dplyr library used in this analysis.
-```{r, echo=TRUE}
+
+```r
 suppressMessages(library(dplyr))
 ```
 
@@ -25,7 +27,8 @@ This dataset has three variables:
   __steps__ - the number of steps for the given interval
   
 The date value is a character value when imported. We will need to convert this to a date type.
-```{r, echo=TRUE}
+
+```r
 d1 <- mutate(d,date=as.Date(date))
 ```
 
@@ -37,26 +40,31 @@ To get the mean total number of steps taken per day, we will first filter out an
 steps is 'NA'. Then, since we are looking at the entire day we can just take the 'date' and 'step' columns, 
 leaving out interval. We will group by the date and sum the total number of steps each day.
 
-```{r, echo=TRUE}
+
+```r
 dSummary <- d1 %>% filter(steps != "NA") %>% select(date,steps) %>% group_by(date) %>% summarise_each(funs(sum),steps) 
 ```
 
 We can look at the results in a histogram.
 
-```{r, echo=TRUE}
+
+```r
 par(mar=c(5,5,2,2), mfrow=c(1,1))
 hist(dSummary$steps, main="Total Steps Each Day",xlab="Steps per day",ylab="Frequency (days)", ylim=c(0,40),col="green")
 ```
 
+![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5-1.png) 
+
 Next, we will calculate the mean and median of the total steps taken each day.
 
-```{r, echo=TRUE}
+
+```r
 mean <- mean(dSummary$steps)
 median <- median(dSummary$steps)
 ```
 
-The __mean__ number of steps taken per day is `r format(mean,digits=7)`. 
-The __median__ number of steps taken per day is `r median`.
+The __mean__ number of steps taken per day is 10766.19. 
+The __median__ number of steps taken per day is 10765.
 
 
 
@@ -65,44 +73,52 @@ The __median__ number of steps taken per day is `r median`.
 To look at the average daily activity pattern, we will need to get the avarage number of steps taken in each interval.
 Again, we will remove any rows where the value for steps is 'NA'. We will then group by interval and take the
 mean of the steps measurements.
-```{r, echo=TRUE}
+
+```r
 dSummaryInterval <- d1 %>% filter(steps != "NA") %>% select(interval,steps) %>% group_by(interval) %>% summarise_each(funs(mean),steps) 
 ```
 
 To see the pattern, we will plot the average number of steps per interval as a line plot.
-```{r, echo=TRUE}
+
+```r
 par(mar=c(5,5,2,2), mfrow=c(1,1))
 plot(dSummaryInterval$interval,dSummaryInterval$steps, type="l", xlab="Interval", ylab="Average number of steps")
 ```
 
+![plot of chunk unnamed-chunk-8](figure/unnamed-chunk-8-1.png) 
+
 Now we want to see the interval with the maximum number of steps.
-```{r, echo=TRUE}
+
+```r
 interval_max_steps <- dSummaryInterval[dSummaryInterval$steps==max(dSummaryInterval$steps),"interval"]
 ```
 
-The interval with the maximum number of steps is: `r interval_max_steps`.
+The interval with the maximum number of steps is: 835.
 
 ## Inputing missing values
 
 Let's see how many 'NA' values there are for steps in the original dataset.
-```{r, echo=TRUE}
+
+```r
 num_missing_values <- sum(is.na(d1$steps))
 ```
 
-There are `r num_missing_values` missing values.
+There are 2304 missing values.
 
 We will want to replace the missing values with the average number of steps for each interval, 
 which was calculated previously in the dSummaryInterval data frame. 
 
 To do this, we will merge the dSummaryInterval data frame with the original dataset, d1.
-```{r, echo=TRUE}
+
+```r
 d2 <- merge(d1,dSummaryInterval,"interval")
 ```
 
 Then we will replace the value for steps in the original dataset - 'steps.x' with the average value, 
 'steps.y' from dSummaryInterval.
 
-```{r, echo=TRUE}
+
+```r
 for(i in 1:length(d2$interval)) {
   if(is.na(d2[i,"steps.x"])) {
     d2[i,"steps.x"]=d2[i,"steps.y"]
@@ -112,30 +128,36 @@ for(i in 1:length(d2$interval)) {
 
 Now, remove the extra column and rename steps.x back to steps,
 
-```{r, echo=TRUE}
+
+```r
 d3 <- select((rename(d2,steps = steps.x)),steps,date,interval)
 ```
 
 To see if there are any differences now that the missing values have been replaced, we will summarize the 
 data as in the first question.
-```{r, echo=TRUE}
+
+```r
 dSummary2 <- d3 %>% select(date,steps) %>% group_by(date) %>% summarise_each(funs(sum),steps) 
 ```
 
 Now we will plot a histogram of the sums of the steps for each day.
-```{r, echo=TRUE}
+
+```r
 par(mar=c(5,5,2,2), mfrow=c(1,1))
 hist(dSummary2$steps, main="Total Steps Each Day",xlab="Steps per day",ylab="Frequency (days)",ylim=c(0,40),col="green")
 ```
 
+![plot of chunk unnamed-chunk-15](figure/unnamed-chunk-15-1.png) 
+
 And calculate the median and the mean.
-```{r, echo=TRUE}
+
+```r
 mean2 <- mean(dSummary2$steps)
 median2 <- median(dSummary2$steps)
 ```
 
-The __mean__ number of steps taken per day is `r format(mean,digits=7)`. 
-The __median__ number of steps taken per day is `r median`.
+The __mean__ number of steps taken per day is 10766.19. 
+The __median__ number of steps taken per day is 10765.
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
@@ -146,12 +168,14 @@ been replaced.
 
 Create a new variable called 'day' and use the weekdays() function to update it. This will give us
 the day of the week that the measurement was taken.
-```{r, echo=TRUE}
+
+```r
 d4 <- mutate(d3,day=weekdays(date))
 ```
 
 Next, we will update this variable with either 'Weekday' or 'Weekend' depending on the day of the week.
-```{r, echo=TRUE}
+
+```r
 for(i in 1:length(d4$day)) {
   if (d4[i,"day"] %in% c("Saturday","Sunday"))  {
     d4[i,"day"] <- "Weekend"
@@ -163,7 +187,8 @@ for(i in 1:length(d4$day)) {
 We will summarize the weekends and weekdays and weekdays separately and get the average number of steps 
 taken per interval for each.
 
-```{r, echo=TRUE}
+
+```r
 dWeekdays <- d4 %>% filter(day=="Weekday") %>% select(interval,steps) %>% group_by(interval) %>% summarise_each(funs(mean),steps)
 
 dWeekend <- d4 %>% filter(day=="Weekend") %>% select(interval,steps) %>% group_by(interval) %>% summarise_each(funs(mean),steps)
@@ -171,11 +196,14 @@ dWeekend <- d4 %>% filter(day=="Weekend") %>% select(interval,steps) %>% group_b
 
 Now we can plot weekends and weekdays on top of each other to compare.
 
-```{r, echo=TRUE}
+
+```r
 par(mar=c(2,2,2,2),mfrow=c(2,1))
 plot(dWeekdays$interval,dWeekdays$steps, type="l", xlab="",ylab="", main="Weekdays", ylim=c(0,300))
 plot(dWeekend$interval,dWeekend$steps, type="l", xlab="",ylab="", main="Weekends", ylim=c(0,300))
 ```
+
+![plot of chunk unnamed-chunk-20](figure/unnamed-chunk-20-1.png) 
 
 It looks like the average number of steps is higher in the middle of the day on weekends than on weekdays.
 Also, there are more steps earlier in the day on weekdays.
