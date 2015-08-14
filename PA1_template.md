@@ -40,7 +40,7 @@ leaving out interval. We will group by the date and sum the total number of step
 dSummary <- d1 %>% filter(steps != "NA") %>% select(date,steps) %>% group_by(date) %>% summarise_each(funs(sum),steps) 
 ```
 
-We can look at the results in a histogram.
+We can look at the results by creating a histogram.
 
 
 ```r
