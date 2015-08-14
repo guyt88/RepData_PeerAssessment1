@@ -1,9 +1,4 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 
 
 ## Loading and preprocessing the data
@@ -53,7 +48,7 @@ par(mar=c(5,5,2,2), mfrow=c(1,1))
 hist(dSummary$steps, main="Total Steps Each Day",xlab="Steps per day",ylab="Frequency (days)", ylim=c(0,40),col="green")
 ```
 
-![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-5-1.png) 
 
 Next, we will calculate the mean and median of the total steps taken each day.
 
@@ -85,7 +80,7 @@ par(mar=c(5,5,2,2), mfrow=c(1,1))
 plot(dSummaryInterval$interval,dSummaryInterval$steps, type="l", xlab="Interval", ylab="Average number of steps")
 ```
 
-![plot of chunk unnamed-chunk-8](figure/unnamed-chunk-8-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-8-1.png) 
 
 Now we want to see the interval with the maximum number of steps.
 
@@ -147,7 +142,7 @@ par(mar=c(5,5,2,2), mfrow=c(1,1))
 hist(dSummary2$steps, main="Total Steps Each Day",xlab="Steps per day",ylab="Frequency (days)",ylim=c(0,40),col="green")
 ```
 
-![plot of chunk unnamed-chunk-15](figure/unnamed-chunk-15-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-15-1.png) 
 
 And calculate the median and the mean.
 
@@ -203,7 +198,7 @@ plot(dWeekdays$interval,dWeekdays$steps, type="l", xlab="",ylab="", main="Weekda
 plot(dWeekend$interval,dWeekend$steps, type="l", xlab="",ylab="", main="Weekends", ylim=c(0,300))
 ```
 
-![plot of chunk unnamed-chunk-20](figure/unnamed-chunk-20-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-20-1.png) 
 
 It looks like the average number of steps is higher in the middle of the day on weekends than on weekdays.
 Also, there are more steps earlier in the day on weekdays.
